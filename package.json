@@ -1,11 +1,16 @@
 {
   "name": "the-match",
   "version": "1.0.0",
-  "description": "Sistema de votación de profesores",
+  "private": true,
   "scripts": {
-    "dev": "npx http-server -p 3000 -o"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "devDependencies": {
-    "http-server": "^14.1.1"
+  "dependencies": {
+    "next": "14.1.0",
+    "react": "^18",
+    "react-dom": "^18"
   }
 }

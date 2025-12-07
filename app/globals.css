@@ -75,7 +75,7 @@ body {
     font-weight: 600;
 }
 
-.nav-btn:hover {
+.nav-btn:hover, .nav-btn.active {
     border-color: var(--accent);
     color: #fff;
 }
