@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Battle Royale</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <header class="topbar">
+    <div class="brand">Battle Royale</div>
+    <nav class="nav">
+      <button class="nav-btn" data-section="home">Inicio</button>
+      <button class="nav-btn" data-section="ranking">Ranking</button>
+      <button class="nav-btn" data-section="logros">Logros</button>
+    </nav>
+    <div class="stats">
+      <div class="xp">
+        <span class="label">XP</span>
+        <div class="bar"><div class="fill" id="xpFill"></div></div>
+        <span id="xpValue">0</span>
+      </div>
+      <div class="streak"><span id="streak">0</span> días 🔥</div>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="panel">
+      <div class="hero">
+        <p class="eyebrow">Versus en vivo</p>
+        <h1>¿Quién es el mejor profe?</h1>
+        <p class="sub">Dos profesores, un solo clic. Vota por tu favorito y ayuda a decidir quién es el mejor.</p>
+      </div>
+
+      <div class="versus">
+        <article class="card" id="cardA">
+          <div class="badge live">EN VIVO</div>
+          <div class="avatar"><img id="imgA" alt="Profesor A" /></div>
+          <h3 id="nameA">Profesor A</h3>
+          <p class="dept" id="deptA">Departamento</p>
+          <div class="meta">
+            <span>⭐ <span id="ratingA">0</span></span>
+            <span>👥 <span id="votesA">0</span></span>
+          </div>
+          <button class="vote" data-choice="A">Votar</button>
+        </article>
+
+        <div class="vs">VS</div>
+
+        <article class="card" id="cardB">
+          <div class="badge alt">Destacado</div>
+          <div class="avatar"><img id="imgB" alt="Profesor B" /></div>
+          <h3 id="nameB">Profesor B</h3>
+          <p class="dept" id="deptB">Departamento</p>
+          <div class="meta">
+            <span>⭐ <span id="ratingB">0</span></span>
+            <span>👥 <span id="votesB">0</span></span>
+          </div>
+          <button class="vote" data-choice="B">Votar</button>
+        </article>
+      </div>
+
+      <div class="actions">
+        <button id="skip" class="ghost">Saltar pareja</button>
+        <button id="share" class="primary">Compartir match</button>
+      </div>
+
+      <div class="counter">
+        <p class="label">Votos de hoy</p>
+        <p class="number" id="globalVotes">0</p>
+      </div>
+    </section>
+
+    <section id="ranking" class="panel hidden">
+      <div class="section-head">
+        <h2>Ranking</h2>
+        <p>Ordenado por ELO.</p>
+      </div>
+      <div id="rankingList" class="list"></div>
+    </section>
+
+    <section id="logros" class="panel hidden">
+      <div class="section-head">
+        <h2>Logros</h2>
+        <p>Completa hitos y gana XP extra.</p>
+      </div>
+      <div id="achievementsGrid" class="grid"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+</body>
+</html>
+
+
