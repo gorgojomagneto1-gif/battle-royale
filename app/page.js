@@ -65,7 +65,8 @@ const initialProfessors = [
     { id: 20, name: "Victor Emilio Carrera Barrantes", department: "Docente", image: "/carrera.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
     { id: 21, name: "Chicana López, Julio Mariano", department: "Docente", image: "/chicana.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
     { id: 22, name: "Roxani Marisa Yaringaño Limache", department: "Docente", image: "/ROXANI MARISA Yaringaño Limache.png", rating: 4.8, votes: baseVotes, elo: 1500 },
-    { id: 23, name: "Profe Trikero", department: "Docente", image: "/profe trikero.jpg", rating: 4.8, votes: baseVotes, elo: 1500 }
+    { id: 23, name: "Profe Trikero", department: "Docente", image: "/profe trikero.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
+    { id: 24, name: "Amelia Del Carmen Villanueva Yaya", department: "Docente", image: "/amelia.jpg", rating: 4.8, votes: baseVotes, elo: 1500 }
 ];
 
 const initialAchievements = [
@@ -126,7 +127,23 @@ export default function Home() {
                 return;
             }
 
-            if (!isMounted || !data || data.length === 0) return;
+            if (!isMounted) return;
+
+            if (!data || data.length === 0) {
+                const { error: seedError } = await supabase.from('professors').upsert(initialProfessors);
+                if (seedError) {
+                    console.error('Supabase seed error', seedError.message);
+                    return;
+                }
+                setProfessors(initialProfessors);
+                return;
+            }
+
+            const missing = initialProfessors.filter(p => !data.some(r => r.id === p.id));
+            if (missing.length > 0) {
+                const { error: upsertError } = await supabase.from('professors').upsert(missing);
+                if (upsertError) console.error('Supabase seed error', upsertError.message);
+            }
 
             const merged = initialProfessors.map(p => {
                 const remote = data.find(r => r.id === p.id);
