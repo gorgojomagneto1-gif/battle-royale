@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
-const DATA_VERSION = '2025-12-all-22';
+const DATA_VERSION = '2025-12-all-23';
 
 const LEVELS = [
     { name: 'Novato', xp: 0 },
@@ -59,12 +59,13 @@ const initialProfessors = [
     { id: 14, name: "Papanicolau Denegri, Jorge Nicolás Alejandro", department: "Docente UNMSM", image: "/papaniculau.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
     { id: 15, name: "Pariona Llanos, Ricardo", department: "Docente UNMSM", image: "/ricardo_pariona_llanos.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
     { id: 16, name: "Miss Sosita", department: "Docente", image: "/miss sosita.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
-    { id: 17, name: "Trikero Raez Guevara, Luis Rolando", department: "Docente", image: "/raez.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
+    { id: 17, name: "Raez Guevara, Luis Rolando", department: "Docente", image: "/raez.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
     { id: 18, name: "Nancy Rosa Moya Lázaro", department: "Docente", image: "/moya.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
     { id: 19, name: "Luis Miguel Nuñez Ramírez", department: "Docente", image: "/nuñez.png", rating: 4.8, votes: baseVotes, elo: 1500 },
     { id: 20, name: "Victor Emilio Carrera Barrantes", department: "Docente", image: "/carrera.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
     { id: 21, name: "Chicana López, Julio Mariano", department: "Docente", image: "/chicana.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
-    { id: 22, name: "Roxani Marisa Yaringaño Limache", department: "Docente", image: "/ROXANI MARISA Yaringaño Limache.png", rating: 4.8, votes: baseVotes, elo: 1500 }
+    { id: 22, name: "Roxani Marisa Yaringaño Limache", department: "Docente", image: "/ROXANI MARISA Yaringaño Limache.png", rating: 4.8, votes: baseVotes, elo: 1500 },
+    { id: 23, name: "Profe Trikero", department: "Docente", image: "/profe trikero.jpg", rating: 4.8, votes: baseVotes, elo: 1500 }
 ];
 
 const initialAchievements = [
@@ -369,6 +370,7 @@ export default function Home() {
                         <div className="section-head">
                             <h2>Ranking</h2>
                             <p>Ordenado por ELO.</p>
+                            <p style={{ color: 'var(--muted)' }}>Docentes activos: {professors.length}</p>
                         </div>
                         <div className="list">
                             {[...professors].sort((a, b) => b.elo - a.elo).map((prof, i) => (
