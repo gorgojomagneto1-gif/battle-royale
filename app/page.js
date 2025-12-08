@@ -50,18 +50,26 @@ export default function Home() {
     const [match, setMatch] = useState([]);
     const [streak, setStreak] = useState(0);
     const [toast, setToast] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const getTeachers = async () => {
-            const { data: teachersData, error } = await supabase.from('teachers').select('*');
-            
-            console.log('Fetched Supabase data:', teachersData);
-            console.error('Supabase error:', error);
+            setLoading(true);
+            setError(null);
+            try {
+                const { data: teachersData, error: supabaseError } = await supabase.from('teachers').select('*');
 
-            if (error) {
-                console.error('Error fetching teachers:', error);
-            } else {
-                setTeachers(teachersData);
+                if (supabaseError) {
+                    throw supabaseError;
+                }
+
+                setTeachers(teachersData || []);
+            } catch (err) {
+                console.error('Error fetching teachers:', err);
+                setError('Could not fetch teachers. Please check the console and ensure your Supabase RLS is configured correctly.');
+            } finally {
+                setLoading(false);
             }
         };
         getTeachers();
@@ -128,6 +136,33 @@ export default function Home() {
     }
 
     const sortedTeachers = [...teachers].sort((a, b) => b.rating - a.rating);
+
+    if (loading) {
+        return (
+            <main className="container">
+                <h1>Battle Royale de Docentes</h1>
+                <p>Loading teachers...</p>
+            </main>
+        );
+    }
+
+    if (error) {
+        return (
+            <main className="container">
+                <h1>Battle Royale de Docentes</h1>
+                <p style={{ color: 'red' }}>Error: {error}</p>
+            </main>
+        );
+    }
+
+    if (teachers.length === 0 && !loading) {
+        return (
+            <main className="container">
+                <h1>Battle Royale de Docentes</h1>
+                <p>No teachers found. The database might be empty or there was an issue fetching them.</p>
+            </main>
+        );
+    }
 
     if (match.length < 2) {
         return (
