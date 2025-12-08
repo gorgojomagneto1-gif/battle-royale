@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
-const DATA_VERSION = '2025-12-zero-votes';
+const DATA_VERSION = '2025-12-all-22';
 
 const LEVELS = [
     { name: 'Novato', xp: 0 },
@@ -45,8 +45,7 @@ const frasesToast = [
 const baseVotes = 0;
 const initialProfessors = [
     { id: 1, name: "Escudero Aguilar, Gudelia Sofía", department: "Docente UNMSM", image: "/gudelia.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
-    { id: 2, name: "Julio Chicana", department: "Docente UNMSM", image: "/chicana.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
-    { id: 3, name: "Acuña, Walter", department: "Docente UNMSM", image: "/acuña.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
+    { id: 3, name: "Acuña Montañez Walter Roberto", department: "Docente UNMSM", image: "/acuña.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
     { id: 4, name: "Arbaiza Gonzales, Luz Rossana", department: "Docente UNMSM", image: "/s200_rossana.arbaiza_11zon.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
     { id: 5, name: "Montalvo Balarezo, Rocío Amelia", department: "Docente UNMSM", image: "/rocio.png", rating: 4.8, votes: baseVotes, elo: 1500 },
     { id: 6, name: "Hinojosa Lazo, Hilmar Antonio", department: "Docente UNMSM", image: "/hilmarhinojosa.yolasite.com_11zon.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
@@ -58,7 +57,14 @@ const initialProfessors = [
     { id: 12, name: "Tinoco Gómez, Oscar Rafael", department: "Docente UNMSM", image: "/tinoco.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
     { id: 13, name: "Bendezú Mejía, Christian Casto", department: "Docente UNMSM", image: "/bendezu.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
     { id: 14, name: "Papanicolau Denegri, Jorge Nicolás Alejandro", department: "Docente UNMSM", image: "/papaniculau.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
-    { id: 15, name: "Pariona Llanos, Ricardo", department: "Docente UNMSM", image: "/ricardo_pariona_llanos.jpg", rating: 4.8, votes: baseVotes, elo: 1500 }
+    { id: 15, name: "Pariona Llanos, Ricardo", department: "Docente UNMSM", image: "/ricardo_pariona_llanos.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
+    { id: 16, name: "Miss Sosita", department: "Docente", image: "/miss sosita.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
+    { id: 17, name: "Trikero Raez Guevara, Luis Rolando", department: "Docente", image: "/raez.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
+    { id: 18, name: "Nancy Rosa Moya Lázaro", department: "Docente", image: "/moya.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
+    { id: 19, name: "Luis Miguel Nuñez Ramírez", department: "Docente", image: "/nuñez.png", rating: 4.8, votes: baseVotes, elo: 1500 },
+    { id: 20, name: "Victor Emilio Carrera Barrantes", department: "Docente", image: "/carrera.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
+    { id: 21, name: "Chicana López, Julio Mariano", department: "Docente", image: "/chicana.jpg", rating: 4.8, votes: baseVotes, elo: 1500 },
+    { id: 22, name: "Roxani Marisa Yaringaño Limache", department: "Docente", image: "/ROXANI MARISA Yaringaño Limache.png", rating: 4.8, votes: baseVotes, elo: 1500 }
 ];
 
 const initialAchievements = [
