@@ -1,8 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabaseClient';
 
 const DATA_VERSION = '2025-12-zero-votes';
+
+const LEVELS = [
+    { name: 'Novato', xp: 0 },
+    { name: 'Causita', xp: 400 },
+    { name: 'Causita Pro', xp: 1200 },
+    { name: 'Leyenda', xp: 2400 }
+];
 
 const frasesVoto = [
     "¡Buen voto!",
@@ -10,6 +18,12 @@ const frasesVoto = [
     "¡Gran docente!",
     "¡Me gusta!",
     "¡Bacán!"
+];
+
+const frasesCausitaPro = [
+    "Causa, ya estás en modo Dios.",
+    "Estás en modo ceviche con su leche de tigre: potente.",
+    "Estás imparable, vótame tu gaaa"
 ];
 
 const frasesRacha = [
@@ -62,6 +76,22 @@ function rand(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
+function getLevel(totalXP) {
+    let current = LEVELS[0];
+    for (const lvl of LEVELS) {
+        if (totalXP >= lvl.xp) current = lvl;
+    }
+    const currentIndex = LEVELS.findIndex(l => l.name === current.name);
+    const next = LEVELS[currentIndex + 1];
+    const nextXp = next ? next.xp : current.xp + 400;
+    return {
+        level: currentIndex + 1,
+        name: current.name,
+        baseXp: current.xp,
+        nextXp
+    };
+}
+
 export default function Home() {
     const [section, setSection] = useState('home');
     const [professors, setProfessors] = useState(initialProfessors);
@@ -69,6 +99,7 @@ export default function Home() {
     const [gameState, setGameState] = useState({
         totalXP: 0,
         level: 1,
+        levelName: 'Novato',
         totalVotes: 0,
         streak: 0,
         lastVoteDate: null,
@@ -76,6 +107,36 @@ export default function Home() {
     });
     const [currentMatch, setCurrentMatch] = useState(null);
     const [toast, setToast] = useState(null);
+
+    useEffect(() => {
+        if (!supabase) return;
+
+        let isMounted = true;
+        const loadFromSupabase = async () => {
+            const { data, error } = await supabase.from('professors').select('*');
+            if (error) {
+                console.error('Supabase fetch error', error.message);
+                return;
+            }
+
+            if (!isMounted || !data || data.length === 0) return;
+
+            const merged = initialProfessors.map(p => {
+                const remote = data.find(r => r.id === p.id);
+                return remote ? { ...p, ...remote } : p;
+            });
+            setProfessors(merged);
+        };
+
+        loadFromSupabase();
+        return () => { isMounted = false; };
+    }, []);
+
+    const syncProfessorsToSupabase = async (rows) => {
+        if (!supabase || !rows || rows.length === 0) return;
+        const { error } = await supabase.from('professors').upsert(rows);
+        if (error) console.error('Supabase sync error', error.message);
+    };
 
     useEffect(() => {
         // Load state from localStorage
@@ -159,7 +220,7 @@ export default function Home() {
 
         const updatedProfessors = professors.map(p => {
             if (p.id === winner.id) {
-                return { ...p, elo: newWinnerElo, votes: p.votes + 1, rating: Math.min(5, p.rating + 0.01) };
+                return { ...p, elo: newWinnerElo, votes: p.votes + 1 };
             }
             if (p.id === loser.id) {
                 return { ...p, elo: newLoserElo };
@@ -168,6 +229,10 @@ export default function Home() {
         });
 
         setProfessors(updatedProfessors);
+
+        const updatedWinner = updatedProfessors.find(p => p.id === winner.id);
+        const updatedLoser = updatedProfessors.find(p => p.id === loser.id);
+        syncProfessorsToSupabase([updatedWinner, updatedLoser]);
 
         const today = new Date().toDateString();
         let newStreak = gameState.streak;
@@ -200,14 +265,23 @@ export default function Home() {
         const achievementXp = checkAchievements(newState);
         newState.totalXP += achievementXp;
 
+        const levelInfo = getLevel(newState.totalXP);
+        newState.level = levelInfo.level;
+        newState.levelName = levelInfo.name;
+
         setGameState(newState);
-        showToastMsg(`${rand(frasesVoto)} +${xpGained} XP, ${rand(frasesToast)}`);
+        const isCausitaPro = levelInfo.name === 'Causita Pro' || newState.totalXP >= LEVELS.find(l => l.name === 'Causita Pro').xp;
+        const votoPhrases = isCausitaPro ? frasesCausitaPro : frasesVoto;
+        showToastMsg(`${rand(votoPhrases)} +${xpGained} XP, ${rand(frasesToast)}`);
         
         setTimeout(displayMatch, 300);
     };
 
-    const xpForNextLevel = gameState.level * 200;
-    const progress = ((gameState.totalXP % xpForNextLevel) / xpForNextLevel) * 100;
+    const levelInfo = getLevel(gameState.totalXP);
+    const progress = Math.min(
+        ((gameState.totalXP - levelInfo.baseXp) / (levelInfo.nextXp - levelInfo.baseXp)) * 100,
+        100
+    );
 
     return (
         <>
@@ -222,7 +296,7 @@ export default function Home() {
                 </nav>
                 <div className="stats">
                     <div className="xp">
-                        <span className="label">XP</span>
+                        <span className="label">XP · {levelInfo.name}</span>
                         <div className="bar"><div className="fill" style={{ width: `${Math.min(progress, 100)}%` }}></div></div>
                         <span>{gameState.totalXP}</span>
                     </div>
@@ -247,8 +321,8 @@ export default function Home() {
                                     <h3>{currentMatch[0].name}</h3>
                                     <p className="dept">{currentMatch[0].department}</p>
                                     <div className="meta">
-                                        <span>⭐ {currentMatch[0].rating.toFixed(1)}</span>
-                                        <span>👥 {currentMatch[0].votes}</span>
+                                        <span>ELO {currentMatch[0].elo}</span>
+                                        <span>👥 {currentMatch[0].votes} votos</span>
                                     </div>
                                     <button className="vote" onClick={() => vote(0)}>Votar</button>
                                 </article>
@@ -261,8 +335,8 @@ export default function Home() {
                                     <h3>{currentMatch[1].name}</h3>
                                     <p className="dept">{currentMatch[1].department}</p>
                                     <div className="meta">
-                                        <span>⭐ {currentMatch[1].rating.toFixed(1)}</span>
-                                        <span>👥 {currentMatch[1].votes}</span>
+                                        <span>ELO {currentMatch[1].elo}</span>
+                                        <span>👥 {currentMatch[1].votes} votos</span>
                                     </div>
                                     <button className="vote" onClick={() => vote(1)}>Votar</button>
                                 </article>
