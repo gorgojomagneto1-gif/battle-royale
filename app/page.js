@@ -54,6 +54,10 @@ export default function Home() {
     useEffect(() => {
         const getTeachers = async () => {
             const { data: teachersData, error } = await supabase.from('teachers').select('*');
+            
+            console.log('Fetched Supabase data:', teachersData);
+            console.error('Supabase error:', error);
+
             if (error) {
                 console.error('Error fetching teachers:', error);
             } else {
