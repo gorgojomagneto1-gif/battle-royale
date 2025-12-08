@@ -1,4 +1,4 @@
-// File: /home/user/battle-royale/app/page.js
+// File: /home/runner/work/battle-royale/battle-royale/app/page.js
 import * as entry from '../../../app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
